@@ -1,0 +1,36 @@
+package tasks;
+
+import io.restassured.http.ContentType;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Performable;
+import net.serenitybdd.screenplay.Task;
+import net.serenitybdd.screenplay.rest.interactions.Get;
+import net.thucydides.core.annotations.Step;
+
+import static net.serenitybdd.screenplay.Tasks.instrumented;
+
+public class GetUsers implements Task {
+    private final int page;
+
+    public GetUsers(int page){
+        this.page=page;
+    }
+    public static Performable fromPage(int page){
+        return  instrumented(GetUsers.class,page);
+    }
+
+    @Override
+    @Step("{0} realiza el consumo del WS GET para la pagina  #page")
+    public <T extends Actor> void performAs(T actor) {
+        actor.attemptsTo(
+
+        Get.resource("/users?page="+page)
+                        .with(requestSpecification ->
+                                requestSpecification.contentType(ContentType.JSON)
+                                        .header("header1", "value1")
+
+                        )
+
+        );
+    }
+}
